@@ -1,0 +1,25 @@
+server:
+  applicationConnectors:
+    - type: http
+      port: 8080
+  adminConnectors:
+    - type: http
+      port: 8081
+
+data_source_factory:
+  driverClass: "org.h2.Driver"
+  url: "jdbc:h2:mem:revolut"
+  user: ""
+  password: ""
+  maxSize: 20
+  properties:
+    hibernate.dialect: "org.hibernate.dialect.MySQL5Dialect"
+    hibernate.hbm2ddl.auto: "create-drop"
+    hibernate.show_sql: true
+    hibernate.generate_statistics: false
+    hibernate.connection.pool_size: 200
+    hibernate.connection.isolation: 2 # READ-COMMITTED
+    hibernate.connection.autoReconnect: true
+    hibernate.connection.autoReconnectForPools: true
+    hibernate.connection.is-connection-validation-required: true
+    hibernate.connection.provider_class: org.hibernate.connection.C3P0ConnectionProvider
