@@ -2,6 +2,7 @@ package com.revolut.assignement.pulkit.dao;
 
 import com.revolut.assignement.pulkit.common.SubTransactionType;
 import com.revolut.assignement.pulkit.common.TransactionStatus;
+import com.revolut.assignement.pulkit.common.TransferMode;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import javax.persistence.Column;
@@ -48,6 +49,12 @@ public class Credit {
 
   @Column(name = "origin_ip", nullable = false)
   private String originIP;
+
+  @Column(name = "comment")
+  private String comment;
+
+  @Column(name = "transfer_mode")
+  private TransferMode transferMode;
 
   @Column(name = "created_at", nullable = false)
   @CreationTimestamp

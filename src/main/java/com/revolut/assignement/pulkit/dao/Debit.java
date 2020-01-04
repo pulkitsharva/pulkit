@@ -50,6 +50,10 @@ public class Debit {
   @Column(name = "origin_ip", nullable = false)
   private String originIP;
 
+  @Column(name = "comment")
+  private String comment;
+
+
   @Column(name = "created_at", nullable = false)
   @CreationTimestamp
   private Timestamp createdAt;

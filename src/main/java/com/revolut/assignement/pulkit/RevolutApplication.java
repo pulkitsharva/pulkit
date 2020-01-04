@@ -1,5 +1,6 @@
 package com.revolut.assignement.pulkit;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.google.inject.Stage;
 import com.hubspot.dropwizard.guice.GuiceBundle;
 import com.revolut.assignement.pulkit.common.DependencyInjector;
@@ -38,10 +39,12 @@ public class RevolutApplication extends Application<RevolutApplicationConfigurat
             .build(Stage.DEVELOPMENT);
     bootstrap.addBundle(hibernate);
     bootstrap.addBundle(this.guiceBundle);
+
   }
 
   public void run(RevolutApplicationConfiguration configuration, Environment environment)
       throws Exception {
     environment.jersey().register(new SessionFactoryProvider.Binder());
+    environment.getObjectMapper().setSerializationInclusion(Include.NON_NULL);
   }
 }
