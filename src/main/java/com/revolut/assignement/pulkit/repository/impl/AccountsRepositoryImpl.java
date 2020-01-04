@@ -18,12 +18,12 @@ public class AccountsRepositoryImpl extends AbstractDAO<Accounts> implements Acc
    * @param sessionFactory a session provider
    */
   @Inject
-  public AccountsRepositoryImpl(SessionFactory sessionFactory) {
+  public AccountsRepositoryImpl(final SessionFactory sessionFactory) {
     super(sessionFactory);
   }
 
   @Override
-  public void insert(Accounts accounts) {
+  public void insert(final Accounts accounts) {
     this.currentSession().save(accounts);
   }
 
@@ -34,14 +34,14 @@ public class AccountsRepositoryImpl extends AbstractDAO<Accounts> implements Acc
   }
 
   @Override
-  public Accounts getAccountByAccountNumber(String accountNumber) {
+  public Accounts getAccountByAccountNumber(final String accountNumber) {
     Criteria criteria = this.currentSession().createCriteria(Accounts.class);
     criteria.add(Restrictions.eq("accountNumber", accountNumber));
     return (Accounts) criteria.uniqueResult();
   }
 
   @Override
-  public void update(Accounts accounts) {
+  public void update(final Accounts accounts) {
     this.currentSession().update(accounts);
   }
 }

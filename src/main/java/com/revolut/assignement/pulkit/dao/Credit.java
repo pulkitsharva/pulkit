@@ -1,5 +1,8 @@
 package com.revolut.assignement.pulkit.dao;
 
+import com.revolut.assignement.pulkit.common.SubTransactionType;
+import com.revolut.assignement.pulkit.common.TransactionStatus;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,33 +18,37 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.joda.time.DateTime;
 
 @Entity
-@Table(name = "user")
+@Table(name = "credit")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @DynamicUpdate
 @Builder
-public class User {
+public class Credit {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "user_id", nullable = false)
-  private Long userId;
+  @Column(name = "transaction_id", nullable = false)
+  private Long transactionId;
 
-  @Column(name = "first_name", nullable = false)
-  private String firstName;
+  @Column(name = "external_reference_id", nullable = false)
+  private String externalReferenceId;
 
-  @Column(name = "last_name")
-  private String lastName;
+  @Column(name = "type", nullable = false)
+  private SubTransactionType type;
 
-  @Column(name = "email")
-  private String email;
+  @Column(name = "status", nullable = false)
+  private TransactionStatus status;
 
-  @Column(name = "phone_number")
-  private String phoneNumber;
+  @Column(name = "amount", nullable = false)
+  private BigDecimal amount;
+
+  @Column(name = "origin_ip", nullable = false)
+  private String originIP;
 
   @Column(name = "created_at", nullable = false)
   @CreationTimestamp
@@ -51,5 +58,6 @@ public class User {
   @UpdateTimestamp
   private Timestamp updatedAt;
 
-
+  @Column(name = "metadata")
+  private String metadata;
 }

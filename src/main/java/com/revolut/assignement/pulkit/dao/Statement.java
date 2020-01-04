@@ -1,10 +1,13 @@
 package com.revolut.assignement.pulkit.dao;
 
-import com.revolut.assignement.pulkit.common.AccountStatus;
+import com.revolut.assignement.pulkit.common.TransactionStatus;
+import com.revolut.assignement.pulkit.common.TransactionType;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -18,24 +21,34 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.joda.time.DateTime;
 
 @Entity
-@Table(name = "accounts")
+@Table(name = "statement")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @DynamicUpdate
 @Builder
-public class Accounts {
+public class Statement {
 
   @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "statement_id", nullable = false)
+  private Long statementId;
+
   @Column(name = "account_number", nullable = false)
   private String accountNumber;
 
-  @Column(name = "user_id", nullable = false)
-  private Long userId;
+  @Column(name = "type", nullable = false)
+  private TransactionType type;
 
-  @Column(name = "available_balance", nullable = false)
-  private BigDecimal availableBalance;
+  @Column(name = "status", nullable = false)
+  private TransactionStatus status;
+
+  @Column(name = "reference_id", nullable = false)
+  private Long referenceId;
+
+  @Column(name = "amount", nullable = false)
+  private BigDecimal amount;
 
   @Column(name = "created_at", nullable = false)
   @CreationTimestamp
@@ -45,10 +58,6 @@ public class Accounts {
   @UpdateTimestamp
   private Timestamp updatedAt;
 
-  @Column(name = "account_activation_date")
-  private DateTime accountActivationDate;
-
-  @Column(name = "account_status", nullable = false)
-  private AccountStatus accountStatus;
-
+  @Column(name = "balance", nullable = false)
+  private BigDecimal balance;
 }
