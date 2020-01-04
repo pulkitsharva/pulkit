@@ -1,5 +1,6 @@
 package com.revolut.assignement.pulkit.dao;
 
+import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,7 +12,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(name = "user")
@@ -39,5 +42,14 @@ public class User {
 
   @Column(name = "phone_number")
   private String phoneNumber;
+
+  @Column(name = "created_at", nullable = false)
+  @CreationTimestamp
+  private Timestamp createdAt;
+
+  @Column(name = "updated_at")
+  @UpdateTimestamp
+  private Timestamp updatedAt;
+
 
 }
