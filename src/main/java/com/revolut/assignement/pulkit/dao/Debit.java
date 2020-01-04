@@ -1,7 +1,7 @@
 package com.revolut.assignement.pulkit.dao;
 
+import com.revolut.assignement.pulkit.common.SubTransactionType;
 import com.revolut.assignement.pulkit.common.TransactionStatus;
-import com.revolut.assignement.pulkit.common.TransactionType;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import javax.persistence.Column;
@@ -20,34 +20,35 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
-@Table(name = "statement")
+@Table(name = "debit")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @DynamicUpdate
 @Builder
-public class Statement {
+
+public class Debit {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "statement_id", nullable = false)
-  private Long statementId;
+  @Column(name = "transaction_id", nullable = false)
+  private Long transactionId;
 
-  @Column(name = "account_number", nullable = false)
-  private String accountNumber;
+  @Column(name = "external_reference_id", nullable = false)
+  private String externalReferenceId;
 
   @Column(name = "type", nullable = false)
-  private TransactionType type;
+  private SubTransactionType type;
 
   @Column(name = "status", nullable = false)
   private TransactionStatus status;
 
-  @Column(name = "reference_id", nullable = false)
-  private Long referenceId;
-
   @Column(name = "amount", nullable = false)
   private BigDecimal amount;
+
+  @Column(name = "origin_ip", nullable = false)
+  private String originIP;
 
   @Column(name = "created_at", nullable = false)
   @CreationTimestamp
@@ -57,6 +58,6 @@ public class Statement {
   @UpdateTimestamp
   private Timestamp updatedAt;
 
-  @Column(name = "balance", nullable = false)
-  private BigDecimal balance;
+  @Column(name = "metadata")
+  private String metadata;
 }

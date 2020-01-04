@@ -5,10 +5,12 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.revolut.assignement.pulkit.repository.AccountsRepository;
 import com.revolut.assignement.pulkit.repository.CreditRepository;
+import com.revolut.assignement.pulkit.repository.DebitRepository;
 import com.revolut.assignement.pulkit.repository.StatementRepository;
 import com.revolut.assignement.pulkit.repository.UserRepository;
 import com.revolut.assignement.pulkit.repository.impl.AccountsRepositoryImpl;
 import com.revolut.assignement.pulkit.repository.impl.CreditRepositoryImpl;
+import com.revolut.assignement.pulkit.repository.impl.DebitRepositoryImpl;
 import com.revolut.assignement.pulkit.repository.impl.StatementRepositoryImpl;
 import com.revolut.assignement.pulkit.repository.impl.UserRepositoryImpl;
 import io.dropwizard.hibernate.HibernateBundle;
@@ -33,5 +35,6 @@ public class DependencyInjector extends AbstractModule {
     this.bind(AccountsRepository.class).to(AccountsRepositoryImpl.class).in(Singleton.class);
     this.bind(StatementRepository.class).to(StatementRepositoryImpl.class).in(Singleton.class);
     this.bind(CreditRepository.class).to(CreditRepositoryImpl.class).in(Singleton.class);
+    this.bind(DebitRepository.class).to(DebitRepositoryImpl.class).in(Singleton.class);
   }
 }

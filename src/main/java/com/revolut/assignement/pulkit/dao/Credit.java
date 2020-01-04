@@ -18,7 +18,6 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.joda.time.DateTime;
 
 @Entity
 @Table(name = "credit")
