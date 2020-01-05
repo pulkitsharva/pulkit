@@ -35,7 +35,10 @@ public class Debit {
   @Column(name = "transaction_id", nullable = false)
   private Long transactionId;
 
-  @Column(name = "external_reference_id", nullable = false)
+  @Column(name = "account_number", nullable = false)
+  private String accountNumber;
+
+  @Column(name = "external_reference_id")
   private String externalReferenceId;
 
   @Column(name = "type", nullable = false)

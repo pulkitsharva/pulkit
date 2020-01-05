@@ -8,6 +8,7 @@ import com.revolut.assignement.pulkit.repository.AccountsRepository;
 import com.revolut.assignement.pulkit.repository.UserRepository;
 import io.dropwizard.hibernate.UnitOfWork;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import javax.ws.rs.GET;
@@ -30,7 +31,7 @@ public class TestController {
   @GET
   @UnitOfWork
   @Path("/test1")
-  public Response test() {
+  public List<String> test() {
     User user =
         User.builder()
             .email(null)
@@ -41,13 +42,33 @@ public class TestController {
     userRepository.create(user);
     Accounts accounts =
         Accounts.builder()
-            .accountNumber(UUID.randomUUID().toString())
+            .accountNumber("xxx")
             .userId(user.getUserId())
             .availableBalance(new BigDecimal(1000))
             .accountStatus(AccountStatus.ACTIVE)
             .build();
     accountsRepository.insert(accounts);
-    return Response.ok().build();
+
+    User user1 =
+        User.builder()
+            .email("john@gmail.com")
+            .firstName("john")
+            .lastName("travolta")
+            .phoneNumber("+919654465464")
+            .build();
+    userRepository.create(user1);
+    Accounts accounts1 =
+        Accounts.builder()
+            .accountNumber("yyy")
+            .userId(user1.getUserId())
+            .availableBalance(new BigDecimal(500))
+            .accountStatus(AccountStatus.ACTIVE)
+            .build();
+    accountsRepository.insert(accounts1);
+    List<String> list = new ArrayList<>();
+    list.add(accounts.getAccountNumber());
+    list.add(accounts1.getAccountNumber());
+    return list;
   }
 
   @GET

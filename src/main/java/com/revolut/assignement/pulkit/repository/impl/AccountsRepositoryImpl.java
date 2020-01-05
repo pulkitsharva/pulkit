@@ -2,11 +2,11 @@ package com.revolut.assignement.pulkit.repository.impl;
 
 import com.google.inject.Inject;
 import com.revolut.assignement.pulkit.dao.Accounts;
-import com.revolut.assignement.pulkit.dao.User;
 import com.revolut.assignement.pulkit.repository.AccountsRepository;
 import io.dropwizard.hibernate.AbstractDAO;
 import java.util.List;
 import org.hibernate.Criteria;
+import org.hibernate.LockMode;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 
@@ -37,6 +37,14 @@ public class AccountsRepositoryImpl extends AbstractDAO<Accounts> implements Acc
   public Accounts getAccountByAccountNumber(final String accountNumber) {
     Criteria criteria = this.currentSession().createCriteria(Accounts.class);
     criteria.add(Restrictions.eq("accountNumber", accountNumber));
+    return (Accounts) criteria.uniqueResult();
+  }
+
+  @Override
+  public Accounts getAccountByAccountNumberWithLock(final String accountNumber) {
+    Criteria criteria = this.currentSession().createCriteria(Accounts.class);
+    criteria.add(Restrictions.eq("accountNumber", accountNumber));
+    criteria.setLockMode(LockMode.PESSIMISTIC_WRITE);
     return (Accounts) criteria.uniqueResult();
   }
 

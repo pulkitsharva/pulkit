@@ -11,5 +11,8 @@ public interface AccountsRepository {
 
   Accounts getAccountByAccountNumber(final String accountNumber);
 
+  Accounts getAccountByAccountNumberWithLock(final String accountNumber);
+
   void update(final Accounts accounts);
+
 }

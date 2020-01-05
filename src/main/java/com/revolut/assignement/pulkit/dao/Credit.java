@@ -35,7 +35,7 @@ public class Credit {
   @Column(name = "transaction_id", nullable = false)
   private Long transactionId;
 
-  @Column(name = "external_reference_id", nullable = false)
+  @Column(name = "external_reference_id")
   private String externalReferenceId;
 
   @Column(name = "type", nullable = false)

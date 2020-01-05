@@ -57,6 +57,4 @@ public class Statement {
   @UpdateTimestamp
   private Timestamp updatedAt;
 
-  @Column(name = "balance", nullable = false)
-  private BigDecimal balance;
 }
