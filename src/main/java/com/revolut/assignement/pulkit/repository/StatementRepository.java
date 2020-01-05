@@ -12,4 +12,6 @@ public interface StatementRepository {
   Statement getStatementByStatementId(final Long statementId);
 
   void update(final Statement statement);
+
+  List<Statement> getAll();
 }

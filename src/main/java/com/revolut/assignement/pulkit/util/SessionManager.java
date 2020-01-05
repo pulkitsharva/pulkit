@@ -17,7 +17,7 @@ public class SessionManager {
     Session prevSession = null;
     try {
       newSession = sessionFactory.openSession();
-      newSession.setFlushMode(FlushMode.COMMIT);
+      newSession.setFlushMode(FlushMode.AUTO);
       /* Get the existing session, and store it to bind it back for the caller */
       prevSession = ManagedSessionContext.bind(newSession);
       Transaction transaction = newSession.beginTransaction();
@@ -31,7 +31,6 @@ public class SessionManager {
         throw e;
       }
     } catch (Exception e) {
-      log.error("Error in SessionManager, error:{}", e);
       throw e;
     } finally {
       if (newSession != null && newSession.isOpen()) {

@@ -9,4 +9,5 @@ public interface TransactionService {
 
   void doTransfer(final String accountNumber, final MoneyTransferRequestDto requestDto)
       throws AccountNotFoundException, AccountStatusNotValidException, InsufficientBalanceException;
+
 }

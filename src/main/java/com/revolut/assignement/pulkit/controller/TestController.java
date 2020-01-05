@@ -3,9 +3,16 @@ package com.revolut.assignement.pulkit.controller;
 import com.google.inject.Inject;
 import com.revolut.assignement.pulkit.common.AccountStatus;
 import com.revolut.assignement.pulkit.dao.Accounts;
+import com.revolut.assignement.pulkit.dao.Credit;
+import com.revolut.assignement.pulkit.dao.Debit;
+import com.revolut.assignement.pulkit.dao.Statement;
 import com.revolut.assignement.pulkit.dao.User;
 import com.revolut.assignement.pulkit.repository.AccountsRepository;
+import com.revolut.assignement.pulkit.repository.CreditRepository;
+import com.revolut.assignement.pulkit.repository.DebitRepository;
+import com.revolut.assignement.pulkit.repository.StatementRepository;
 import com.revolut.assignement.pulkit.repository.UserRepository;
+import com.revolut.assignement.pulkit.service.StatementService;
 import io.dropwizard.hibernate.UnitOfWork;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -28,6 +35,15 @@ public class TestController {
 
   @Inject
   private AccountsRepository accountsRepository;
+
+  @Inject
+  private StatementRepository statementRepository;
+
+  @Inject
+  private DebitRepository debitRepository;
+
+  @Inject
+  private CreditRepository creditRepository;
   @GET
   @UnitOfWork
   @Path("/test1")
@@ -76,5 +92,26 @@ public class TestController {
   @UnitOfWork
   public List<Accounts> getUser(@QueryParam("userId") final Long userId) {
     return accountsRepository.getAllAccounts();
+  }
+
+  @GET
+  @Path("/test3")
+  @UnitOfWork
+  public List<Statement> getAllStatements() {
+    return statementRepository.getAll();
+  }
+
+  @GET
+  @Path("/test4")
+  @UnitOfWork
+  public List<Credit> getAllCredits() {
+    return creditRepository.getCreditsByAccountNumber("yyy");
+  }
+
+  @GET
+  @Path("/test5")
+  @UnitOfWork
+  public List<Debit> getAllDebits() {
+    return debitRepository.getDebitsByAccountNumber("xxx");
   }
 }

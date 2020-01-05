@@ -45,4 +45,10 @@ public class StatementRepositoryImpl extends AbstractDAO<Statement> implements S
   public void update(Statement statement) {
     this.currentSession().update(statement);
   }
+
+  @Override
+  public List<Statement> getAll() {
+    Criteria criteria = this.currentSession().createCriteria(Statement.class);
+    return criteria.list();
+  }
 }

@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class AccountNotFoundException extends Exception {
+public class AccountNotFoundException extends RevolutExceptionMapper {
 
   private final ErrorCode errorCode;
 

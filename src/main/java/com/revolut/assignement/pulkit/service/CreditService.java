@@ -1,6 +1,7 @@
 package com.revolut.assignement.pulkit.service;
 
 import com.revolut.assignement.pulkit.dao.Credit;
+import com.revolut.assignement.pulkit.dto.MoneyTransferRequestDto;
 import java.util.List;
 
 public interface CreditService {
@@ -13,4 +14,5 @@ public interface CreditService {
 
   Credit getCreditByTransactionId(final Long transactionId);
 
+  Credit postCreditTransactionAtDestinationAccount(final String accountNumber, final MoneyTransferRequestDto requestDto);
 }

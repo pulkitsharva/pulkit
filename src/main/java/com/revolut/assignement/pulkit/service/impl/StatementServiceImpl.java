@@ -1,11 +1,18 @@
 package com.revolut.assignement.pulkit.service.impl;
 
 import com.google.inject.Inject;
+import com.revolut.assignement.pulkit.common.TransactionStatus;
+import com.revolut.assignement.pulkit.common.TransactionType;
+import com.revolut.assignement.pulkit.dao.Credit;
+import com.revolut.assignement.pulkit.dao.Debit;
 import com.revolut.assignement.pulkit.dao.Statement;
+import com.revolut.assignement.pulkit.dto.MoneyTransferRequestDto;
 import com.revolut.assignement.pulkit.repository.StatementRepository;
 import com.revolut.assignement.pulkit.service.StatementService;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class StatementServiceImpl implements StatementService {
 
   @Inject
@@ -25,5 +32,45 @@ public class StatementServiceImpl implements StatementService {
 
   public void update(final Statement statement){
     statementRepository.update(statement);
+  }
+
+  public Statement postStatementAtSourceAccount(
+      final String accountNumber, final MoneyTransferRequestDto requestDto, final Debit debit) {
+    Statement statement =
+        Statement.builder()
+            .accountNumber(accountNumber)
+            .referenceId(debit.getTransactionId())
+            .type(TransactionType.DEBIT)
+            .status(TransactionStatus.SUCCESS)
+            .amount(debit.getAmount())
+            .build();
+    statementRepository.insert(statement);
+    log.info(
+        "Statement entry done for transactionId:{}, type:{}, amount:{}, account:{}",
+        debit.getTransactionId(),
+        statement.getType(),
+        statement.getAmount(),
+        statement.getAccountNumber());
+    return statement;
+  }
+
+  public Statement postStatementAtDestinationAccount(
+      final String accountNumber, final MoneyTransferRequestDto requestDto, final Credit credit) {
+    Statement statement =
+        Statement.builder()
+            .accountNumber(requestDto.getReceiverAccountNumber())
+            .referenceId(credit.getTransactionId())
+            .type(TransactionType.CREDIT)
+            .status(TransactionStatus.SUCCESS)
+            .amount(credit.getAmount())
+            .build();
+    statementRepository.insert(statement);
+    log.info(
+        "Statement entry done for transactionId:{}, type:{}, amount:{}, account:{}",
+        credit.getTransactionId(),
+        statement.getType(),
+        statement.getAmount(),
+        statement.getAccountNumber());
+    return statement;
   }
 }

@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class AccountStatusNotValidException extends Exception{
+public class AccountStatusNotValidException extends RevolutExceptionMapper{
 
   private final ErrorCode errorCode;
 

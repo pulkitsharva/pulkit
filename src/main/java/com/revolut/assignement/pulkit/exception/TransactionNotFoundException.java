@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class TransactionNotFoundException extends Exception {
+public class TransactionNotFoundException extends RevolutExceptionMapper {
   private final ErrorCode errorCode;
 
   private final String message;

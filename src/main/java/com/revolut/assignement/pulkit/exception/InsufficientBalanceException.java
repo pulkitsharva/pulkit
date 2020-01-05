@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class InsufficientBalanceException extends Exception {
+public class InsufficientBalanceException extends RevolutExceptionMapper {
 
   private final ErrorCode errorCode;
 

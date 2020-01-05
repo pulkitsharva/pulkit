@@ -20,13 +20,16 @@ public interface Imapper {
   @Mapping(source = "accountNumber", target = "accountNumber")
   @Mapping(source = "subTransactionType", target = "type")
   @Mapping(source = "transactionStatus", target = "status")
+  @Mapping(source = "metadata", target = "metadata")
   Debit transferRequestToDebitEntity(final MoneyTransferRequestDto request, final String accountNumber, final SubTransactionType subTransactionType, final TransactionStatus transactionStatus, String metadata);
 
   @Mapping(source = "subTransactionType", target = "type")
   @Mapping(source = "transactionStatus", target = "status")
-  Credit transferRequestToCreditEntity(final MoneyTransferRequestDto request, final String accountNumber, final SubTransactionType subTransactionType, final TransactionStatus transactionStatus, String metadata);
+  @Mapping(source = "receiverAccountNumber", target = "accountNumber")
+  @Mapping(source = "metadata", target = "metadata")
+  Credit transferRequestToCreditEntity(final MoneyTransferRequestDto request, final String receiverAccountNumber, final SubTransactionType subTransactionType, final TransactionStatus transactionStatus, String metadata);
 
-  TransactionMetadata transferRequestToTransactionMetadata(final MoneyTransferRequestDto moneyTransferRequestDto);
+  TransactionMetadata transferRequestToTransactionMetadata(final MoneyTransferRequestDto moneyTransferRequestDto, final String senderAccountNumber);
 
   @Named("fromDtotoJsonString")
   default String fromDtotoJsonString(Object object) throws JsonProcessingException {

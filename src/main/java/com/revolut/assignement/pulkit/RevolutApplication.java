@@ -5,6 +5,8 @@ import com.google.inject.Stage;
 import com.hubspot.dropwizard.guice.GuiceBundle;
 import com.revolut.assignement.pulkit.common.DependencyInjector;
 import com.revolut.assignement.pulkit.common.RevolutApplicationConfiguration;
+import com.revolut.assignement.pulkit.exception.RevolutExceptionMapperImpl;
+import com.revolut.assignement.pulkit.exception.RuntimeExceptionMapper;
 import io.dropwizard.Application;
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.hibernate.HibernateBundle;
@@ -46,5 +48,7 @@ public class RevolutApplication extends Application<RevolutApplicationConfigurat
       throws Exception {
     environment.jersey().register(new SessionFactoryProvider.Binder());
     environment.getObjectMapper().setSerializationInclusion(Include.NON_NULL);
+    environment.jersey().register(new RuntimeExceptionMapper());
+    environment.jersey().register(new RevolutExceptionMapperImpl());
   }
 }
