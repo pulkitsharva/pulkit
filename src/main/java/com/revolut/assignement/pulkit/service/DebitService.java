@@ -15,4 +15,6 @@ public interface DebitService {
   Debit getDebitByTransactionId(final Long transactionId);
 
   Debit postDebitTransactionAtSourceAccount(final String accountNumber, final MoneyTransferRequestDto requestDto);
+
+  Debit getDebitByPaymentGatewayTransactionId(final String paymentGatewayTransactionId);
 }

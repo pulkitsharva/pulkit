@@ -59,4 +59,9 @@ public class DebitServiceImpl implements DebitService {
       throw new RuntimeException("Unable to post transaction for account:{}, rolling back.");
     }
   }
+
+  @Override
+  public Debit getDebitByPaymentGatewayTransactionId(final String paymentGatewayTransactionId) {
+    return debitRepository.getDebitByPaymentGatewayTransactionId(paymentGatewayTransactionId);
+  }
 }

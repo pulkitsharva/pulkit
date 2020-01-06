@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.revolut.assignement.pulkit.dto.MoneyTransferRequestDto;
 import com.revolut.assignement.pulkit.exception.AccountNotFoundException;
 import com.revolut.assignement.pulkit.exception.AccountStatusNotValidException;
+import com.revolut.assignement.pulkit.exception.DuplicateTransferRequestException;
 import com.revolut.assignement.pulkit.exception.InsufficientBalanceException;
 import com.revolut.assignement.pulkit.service.TransactionService;
 import javax.validation.Valid;
@@ -31,7 +32,7 @@ public class TransactController {
   public Response transferMoney(
       @NotNull @HeaderParam("X-ACCOUNT-NUMBER") final String accountNumber,
       @Valid @NotNull final MoneyTransferRequestDto request)
-      throws AccountNotFoundException, InsufficientBalanceException, AccountStatusNotValidException {
+      throws AccountNotFoundException, InsufficientBalanceException, AccountStatusNotValidException, DuplicateTransferRequestException {
     log.info("got request:{}", request);
     transactionService.doTransfer(accountNumber, request);
     return Response.ok().build();

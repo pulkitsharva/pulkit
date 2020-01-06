@@ -35,6 +35,9 @@ public class Credit {
   @Column(name = "transaction_id", nullable = false)
   private Long transactionId;
 
+  @Column(name = "payment_gateway_transaction_id", nullable = false)
+  private String paymentGatewayTransactionId;
+
   @Column(name = "account_number", nullable = false)
   private String accountNumber;
 

@@ -1,7 +1,6 @@
 package com.revolut.assignement.pulkit.repository.impl;
 
 import com.google.inject.Inject;
-import com.revolut.assignement.pulkit.dao.Credit;
 import com.revolut.assignement.pulkit.dao.Debit;
 import com.revolut.assignement.pulkit.repository.DebitRepository;
 import io.dropwizard.hibernate.AbstractDAO;
@@ -44,6 +43,13 @@ public class DebitRepositoryImpl extends AbstractDAO<Debit> implements DebitRepo
   public Debit getDebitByTransactionId(Long transactionId) {
     Criteria criteria = this.currentSession().createCriteria(Debit.class);
     criteria.add(Restrictions.eq("transactionId", transactionId));
+    return (Debit) criteria.uniqueResult();
+  }
+
+  @Override
+  public Debit getDebitByPaymentGatewayTransactionId(final String paymentGatewayTransactionId) {
+    Criteria criteria = this.currentSession().createCriteria(Debit.class);
+    criteria.add(Restrictions.eq("paymentGatewayTransactionId", paymentGatewayTransactionId));
     return (Debit) criteria.uniqueResult();
   }
 }

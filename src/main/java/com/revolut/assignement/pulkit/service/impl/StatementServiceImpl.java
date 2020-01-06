@@ -1,6 +1,7 @@
 package com.revolut.assignement.pulkit.service.impl;
 
 import com.google.inject.Inject;
+import com.revolut.assignement.pulkit.common.SubTransactionType;
 import com.revolut.assignement.pulkit.common.TransactionStatus;
 import com.revolut.assignement.pulkit.common.TransactionType;
 import com.revolut.assignement.pulkit.dao.Credit;
@@ -40,8 +41,8 @@ public class StatementServiceImpl implements StatementService {
         Statement.builder()
             .accountNumber(accountNumber)
             .referenceId(debit.getTransactionId())
-            .type(TransactionType.DEBIT)
-            .status(TransactionStatus.SUCCESS)
+            .type(debit.getType().getTransactionType())
+            .status(debit.getStatus())
             .amount(debit.getAmount())
             .build();
     statementRepository.insert(statement);
@@ -60,8 +61,8 @@ public class StatementServiceImpl implements StatementService {
         Statement.builder()
             .accountNumber(requestDto.getReceiverAccountNumber())
             .referenceId(credit.getTransactionId())
-            .type(TransactionType.CREDIT)
-            .status(TransactionStatus.SUCCESS)
+            .type(credit.getType().getTransactionType())
+            .status(credit.getStatus())
             .amount(credit.getAmount())
             .build();
     statementRepository.insert(statement);

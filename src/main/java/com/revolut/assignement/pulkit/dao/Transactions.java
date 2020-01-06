@@ -20,15 +20,14 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
-@Table(name = "debit")
+@Table(name = "transactions")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @DynamicUpdate
 @Builder
-
-public class Debit {
+public class Transactions {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,7 +58,6 @@ public class Debit {
   @Column(name = "comment")
   private String comment;
 
-
   @Column(name = "created_at", nullable = false)
   @CreationTimestamp
   private Timestamp createdAt;
@@ -70,6 +68,4 @@ public class Debit {
 
   @Column(name = "metadata")
   private String metadata;
-
-  //add audit table capturing metadata
 }

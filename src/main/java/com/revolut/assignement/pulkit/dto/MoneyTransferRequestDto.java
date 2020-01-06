@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.hibernate.validator.constraints.Range;
 
 @Getter
 @Setter
@@ -22,9 +23,14 @@ public class MoneyTransferRequestDto {
   @NotEmpty
   private String receiverAccountNumber;
 
+  @NotNull
+  @NotEmpty
+  private String paymentGatewayTransactionId;
+
   private String comment;
 
   @NotNull
+  @Range(min = 1, max=10000)
   private BigDecimal amount;
 
   @NotNull

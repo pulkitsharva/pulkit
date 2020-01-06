@@ -2,6 +2,7 @@ package com.revolut.assignement.pulkit.service.impl;
 
 import com.google.inject.Inject;
 import com.revolut.assignement.pulkit.common.AccountStatus;
+import com.revolut.assignement.pulkit.common.TransactionStatus;
 import com.revolut.assignement.pulkit.dao.Accounts;
 import com.revolut.assignement.pulkit.dao.Credit;
 import com.revolut.assignement.pulkit.dao.Debit;
@@ -9,6 +10,7 @@ import com.revolut.assignement.pulkit.dao.Statement;
 import com.revolut.assignement.pulkit.dto.MoneyTransferRequestDto;
 import com.revolut.assignement.pulkit.exception.AccountNotFoundException;
 import com.revolut.assignement.pulkit.exception.AccountStatusNotValidException;
+import com.revolut.assignement.pulkit.exception.DuplicateTransferRequestException;
 import com.revolut.assignement.pulkit.exception.ErrorCode;
 import com.revolut.assignement.pulkit.exception.InsufficientBalanceException;
 import com.revolut.assignement.pulkit.service.AccountService;
@@ -39,13 +41,15 @@ public class TransactionServiceImpl implements TransactionService {
   private StatementService statementService;
 
   @Override
+  //initiateMoneyTransfer
   public void doTransfer(final String accountNumber, final MoneyTransferRequestDto requestDto)
       throws AccountNotFoundException, AccountStatusNotValidException,
-          InsufficientBalanceException {
+      InsufficientBalanceException, DuplicateTransferRequestException {
 
     Accounts senderAccountDetails = getAccount(accountNumber);
     validateAccount(senderAccountDetails, accountNumber);
 
+    //read guava precondition
     if (senderAccountDetails.getAvailableBalance().compareTo(requestDto.getAmount()) < 0) {
       log.error("Account doesnt have balance, accountNumber:{}, balance:{}, requestedTransactionAmount:{}",accountNumber, senderAccountDetails.getAvailableBalance(), requestDto.getAmount());
       throw new InsufficientBalanceException(ErrorCode.INSUFFICIENT_BALANCE, accountNumber);
@@ -53,6 +57,14 @@ public class TransactionServiceImpl implements TransactionService {
 
     Accounts receiverAccountDetails = getAccount(requestDto.getReceiverAccountNumber());
     validateAccount(receiverAccountDetails, requestDto.getReceiverAccountNumber());
+
+    Debit existingTransferRequest = (Debit) SessionManager.executeInSession(session ->{
+      return debitService.getDebitByPaymentGatewayTransactionId(requestDto.getPaymentGatewayTransactionId());
+    },sessionFactory);
+
+    if(existingTransferRequest!=null && TransactionStatus.SUCCESS.equals(existingTransferRequest.getStatus())){
+      throw new DuplicateTransferRequestException(ErrorCode.DUPLICATE_TRANSFER_REQUEST, requestDto.getPaymentGatewayTransactionId());
+    }
 
     SessionManager.executeInSessionInTransaction(
         session -> {
@@ -70,7 +82,7 @@ public class TransactionServiceImpl implements TransactionService {
           }
           catch(Exception e){
             log.error("Unable to take lock or do transfer, rolling back. sender:{}, receiver:{}, error:{}", accountNumber, requestDto.getReceiverAccountNumber(), e);
-            throw new RuntimeException("Something went wrong");
+            throw new RuntimeException(e);
           }
           return null;
         },

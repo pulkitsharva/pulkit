@@ -57,4 +57,6 @@ public class Statement {
   @UpdateTimestamp
   private Timestamp updatedAt;
 
+  //add visible to book flag
+  //add builder to construct statement from transactions
 }

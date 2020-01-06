@@ -13,4 +13,6 @@ public interface DebitRepository {
 
   Debit getDebitByTransactionId(final Long transactionId);
 
+  Debit getDebitByPaymentGatewayTransactionId(final String paymentGatewayTransactionId);
+
 }

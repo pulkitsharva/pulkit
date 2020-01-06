@@ -2,5 +2,13 @@ package com.revolut.assignement.pulkit.common;
 
 public enum SubTransactionType {
 
-  TRANSACTION,CASHBACK,MONEY_TRANSFER,REFUND;
+  TRANSACTION(TransactionType.DEBIT),CASHBACK(TransactionType.CREDIT),MONEY_TRANSFER(TransactionType.CREDIT),REFUND(TransactionType.CREDIT);
+  TransactionType type;
+  SubTransactionType(TransactionType type) {
+    this.type = type;
+  }
+
+  public TransactionType getTransactionType(){
+    return this.type;
+  }
 }
