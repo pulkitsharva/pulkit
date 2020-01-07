@@ -3,27 +3,22 @@ package com.revolut.assignement.pulkit.controller;
 import com.google.inject.Inject;
 import com.revolut.assignement.pulkit.common.AccountStatus;
 import com.revolut.assignement.pulkit.dao.Accounts;
-import com.revolut.assignement.pulkit.dao.Credit;
-import com.revolut.assignement.pulkit.dao.Debit;
 import com.revolut.assignement.pulkit.dao.Statement;
+import com.revolut.assignement.pulkit.dao.Transactions;
 import com.revolut.assignement.pulkit.dao.User;
 import com.revolut.assignement.pulkit.repository.AccountsRepository;
-import com.revolut.assignement.pulkit.repository.CreditRepository;
-import com.revolut.assignement.pulkit.repository.DebitRepository;
 import com.revolut.assignement.pulkit.repository.StatementRepository;
+import com.revolut.assignement.pulkit.repository.TransactionsRepository;
 import com.revolut.assignement.pulkit.repository.UserRepository;
-import com.revolut.assignement.pulkit.service.StatementService;
 import io.dropwizard.hibernate.UnitOfWork;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
 
 @Path("/test")
@@ -40,10 +35,8 @@ public class TestController {
   private StatementRepository statementRepository;
 
   @Inject
-  private DebitRepository debitRepository;
+  private TransactionsRepository transactionsRepository;
 
-  @Inject
-  private CreditRepository creditRepository;
   @GET
   @UnitOfWork
   @Path("/test1")
@@ -104,14 +97,14 @@ public class TestController {
   @GET
   @Path("/test4")
   @UnitOfWork
-  public List<Credit> getAllCredits() {
-    return creditRepository.getCreditsByAccountNumber("yyy");
+  public List<Transactions> getAllCredits() {
+    return transactionsRepository.getTransactionsByAccountNumber("yyy");
   }
 
   @GET
   @Path("/test5")
   @UnitOfWork
-  public List<Debit> getAllDebits() {
-    return debitRepository.getDebitsByAccountNumber("xxx");
+  public List<Transactions> getAllDebits() {
+    return transactionsRepository.getTransactionsByAccountNumber("xxx");
   }
 }

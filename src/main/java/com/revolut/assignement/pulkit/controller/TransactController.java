@@ -2,6 +2,7 @@ package com.revolut.assignement.pulkit.controller;
 
 import com.google.inject.Inject;
 import com.revolut.assignement.pulkit.dto.MoneyTransferRequestDto;
+import com.revolut.assignement.pulkit.dto.MoneyTransferResponseDto;
 import com.revolut.assignement.pulkit.exception.AccountNotFoundException;
 import com.revolut.assignement.pulkit.exception.AccountStatusNotValidException;
 import com.revolut.assignement.pulkit.exception.DuplicateTransferRequestException;
@@ -34,7 +35,7 @@ public class TransactController {
       @Valid @NotNull final MoneyTransferRequestDto request)
       throws AccountNotFoundException, InsufficientBalanceException, AccountStatusNotValidException, DuplicateTransferRequestException {
     log.info("got request:{}", request);
-    transactionService.doTransfer(accountNumber, request);
-    return Response.ok().build();
+    MoneyTransferResponseDto response = transactionService.doTransfer(accountNumber, request);
+    return Response.ok().entity(response).build();
   }
 }

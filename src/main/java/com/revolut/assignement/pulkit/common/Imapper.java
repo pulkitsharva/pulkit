@@ -2,8 +2,7 @@ package com.revolut.assignement.pulkit.common;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.revolut.assignement.pulkit.dao.Credit;
-import com.revolut.assignement.pulkit.dao.Debit;
+import com.revolut.assignement.pulkit.dao.Transactions;
 import com.revolut.assignement.pulkit.dto.MoneyTransferRequestDto;
 import java.util.Objects;
 import org.mapstruct.Mapper;
@@ -21,13 +20,7 @@ public interface Imapper {
   @Mapping(source = "subTransactionType", target = "type")
   @Mapping(source = "transactionStatus", target = "status")
   @Mapping(source = "metadata", target = "metadata")
-  Debit transferRequestToDebitEntity(final MoneyTransferRequestDto request, final String accountNumber, final SubTransactionType subTransactionType, final TransactionStatus transactionStatus, String metadata);
-
-  @Mapping(source = "subTransactionType", target = "type")
-  @Mapping(source = "transactionStatus", target = "status")
-  @Mapping(source = "receiverAccountNumber", target = "accountNumber")
-  @Mapping(source = "metadata", target = "metadata")
-  Credit transferRequestToCreditEntity(final MoneyTransferRequestDto request, final String receiverAccountNumber, final SubTransactionType subTransactionType, final TransactionStatus transactionStatus, String metadata);
+  Transactions transferRequestToDebitEntity(final MoneyTransferRequestDto request, final String accountNumber, final SubTransactionType subTransactionType, final TransactionStatus transactionStatus, String metadata);
 
   TransactionMetadata transferRequestToTransactionMetadata(final MoneyTransferRequestDto moneyTransferRequestDto, final String senderAccountNumber);
 

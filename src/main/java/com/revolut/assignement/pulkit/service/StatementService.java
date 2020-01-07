@@ -1,8 +1,8 @@
 package com.revolut.assignement.pulkit.service;
 
-import com.revolut.assignement.pulkit.dao.Credit;
-import com.revolut.assignement.pulkit.dao.Debit;
+import com.revolut.assignement.pulkit.common.TransactionType;
 import com.revolut.assignement.pulkit.dao.Statement;
+import com.revolut.assignement.pulkit.dao.Transactions;
 import com.revolut.assignement.pulkit.dto.MoneyTransferRequestDto;
 import java.util.List;
 
@@ -16,9 +16,8 @@ public interface StatementService {
 
   void update(final Statement statement);
 
-  Statement postStatementAtSourceAccount(
-      final String accountNumber, final MoneyTransferRequestDto requestDto, final Debit debit);
+  Statement postStatementAtAccount(
+      final String accountNumber, final MoneyTransferRequestDto requestDto, final Transactions transactions, final
+      TransactionType transactionType);
 
-  Statement postStatementAtDestinationAccount(
-      final String accountNumber, final MoneyTransferRequestDto requestDto, final Credit credit);
 }

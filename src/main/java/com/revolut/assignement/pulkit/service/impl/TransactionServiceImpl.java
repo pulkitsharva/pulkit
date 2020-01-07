@@ -2,20 +2,24 @@ package com.revolut.assignement.pulkit.service.impl;
 
 import com.google.inject.Inject;
 import com.revolut.assignement.pulkit.common.AccountStatus;
+import com.revolut.assignement.pulkit.common.CommonsUtil;
+import com.revolut.assignement.pulkit.common.Imapper;
+import com.revolut.assignement.pulkit.common.SubTransactionType;
+import com.revolut.assignement.pulkit.common.TransactionMetadata;
 import com.revolut.assignement.pulkit.common.TransactionStatus;
+import com.revolut.assignement.pulkit.common.TransactionType;
 import com.revolut.assignement.pulkit.dao.Accounts;
-import com.revolut.assignement.pulkit.dao.Credit;
-import com.revolut.assignement.pulkit.dao.Debit;
 import com.revolut.assignement.pulkit.dao.Statement;
+import com.revolut.assignement.pulkit.dao.Transactions;
 import com.revolut.assignement.pulkit.dto.MoneyTransferRequestDto;
+import com.revolut.assignement.pulkit.dto.MoneyTransferResponseDto;
 import com.revolut.assignement.pulkit.exception.AccountNotFoundException;
 import com.revolut.assignement.pulkit.exception.AccountStatusNotValidException;
 import com.revolut.assignement.pulkit.exception.DuplicateTransferRequestException;
 import com.revolut.assignement.pulkit.exception.ErrorCode;
 import com.revolut.assignement.pulkit.exception.InsufficientBalanceException;
+import com.revolut.assignement.pulkit.repository.TransactionsRepository;
 import com.revolut.assignement.pulkit.service.AccountService;
-import com.revolut.assignement.pulkit.service.CreditService;
-import com.revolut.assignement.pulkit.service.DebitService;
 import com.revolut.assignement.pulkit.service.StatementService;
 import com.revolut.assignement.pulkit.service.TransactionService;
 import com.revolut.assignement.pulkit.util.SessionManager;
@@ -32,17 +36,14 @@ public class TransactionServiceImpl implements TransactionService {
   private AccountService accountService;
 
   @Inject
-  private DebitService debitService;
-
-  @Inject
-  private CreditService creditService;
-
-  @Inject
   private StatementService statementService;
+
+  @Inject
+  private TransactionsRepository transactionsRepository;
 
   @Override
   //initiateMoneyTransfer
-  public void doTransfer(final String accountNumber, final MoneyTransferRequestDto requestDto)
+  public MoneyTransferResponseDto doTransfer(final String accountNumber, final MoneyTransferRequestDto requestDto)
       throws AccountNotFoundException, AccountStatusNotValidException,
       InsufficientBalanceException, DuplicateTransferRequestException {
 
@@ -58,35 +59,43 @@ public class TransactionServiceImpl implements TransactionService {
     Accounts receiverAccountDetails = getAccount(requestDto.getReceiverAccountNumber());
     validateAccount(receiverAccountDetails, requestDto.getReceiverAccountNumber());
 
-    Debit existingTransferRequest = (Debit) SessionManager.executeInSession(session ->{
-      return debitService.getDebitByPaymentGatewayTransactionId(requestDto.getPaymentGatewayTransactionId());
+    Transactions existingTransferRequest = (Transactions) SessionManager.executeInSession(session ->{
+      return transactionsRepository.getTransactionsByPaymentGatewayTransactionId(requestDto.getPaymentGatewayTransactionId());
     },sessionFactory);
 
     if(existingTransferRequest!=null && TransactionStatus.SUCCESS.equals(existingTransferRequest.getStatus())){
       throw new DuplicateTransferRequestException(ErrorCode.DUPLICATE_TRANSFER_REQUEST, requestDto.getPaymentGatewayTransactionId());
     }
 
-    SessionManager.executeInSessionInTransaction(
+    Transactions transactions = (Transactions) SessionManager.executeInSessionInTransaction(
         session -> {
           try{
             Accounts senderAccountWithLock = accountService.getAccountByAccountNumberWithLock(accountNumber);
-            Debit debit = debitService.postDebitTransactionAtSourceAccount(accountNumber, requestDto);
-            Statement debitStatement = statementService.postStatementAtSourceAccount(accountNumber, requestDto, debit);
+            Transactions debit = postTransactionAtAccount(accountNumber, requestDto, SubTransactionType.MONEY_TRANSFER);
+            Statement debitStatement = statementService.postStatementAtAccount(accountNumber, requestDto, debit,
+                TransactionType.DEBIT);
             accountService.reduceBalanceOnSuccessfulTransaction(senderAccountWithLock, debit.getAmount());
 
             Accounts receiverAccountWithLock = accountService.getAccountByAccountNumberWithLock(requestDto.getReceiverAccountNumber());
-            Credit credit = creditService.postCreditTransactionAtDestinationAccount(accountNumber, requestDto);
-            Statement creditStatement = statementService.postStatementAtDestinationAccount(accountNumber, requestDto, credit);
+            Transactions credit = postTransactionAtAccount(requestDto.getReceiverAccountNumber(), requestDto, SubTransactionType.MONEY_TRANSFER);
+            Statement creditStatement = statementService.postStatementAtAccount(accountNumber, requestDto, credit, TransactionType.CREDIT);
             accountService.increaseBalanceOnSuccessfulTransaction(receiverAccountWithLock, credit.getAmount());
             log.info("Transfer successfully done, sender:{}, receiver:{}", accountNumber, requestDto.getReceiverAccountNumber());
+            return debit;
           }
           catch(Exception e){
             log.error("Unable to take lock or do transfer, rolling back. sender:{}, receiver:{}, error:{}", accountNumber, requestDto.getReceiverAccountNumber(), e);
             throw new RuntimeException(e);
           }
-          return null;
         },
         sessionFactory);
+    MoneyTransferResponseDto moneyTransferResponseDto = MoneyTransferResponseDto.builder()
+        .paymentGatewayTransactionId(requestDto.getPaymentGatewayTransactionId())
+        .externalReferenceId(transactions.getExternalReferenceId())
+        .timestamp(transactions.getCreatedAt().getTime())
+        .status(transactions.getStatus())
+        .build();
+    return moneyTransferResponseDto;
   }
 
   private void validateAccount(final Accounts account, final String accountNumber)
@@ -112,4 +121,27 @@ public class TransactionServiceImpl implements TransactionService {
                 sessionFactory);
     return account;
   }
+
+  private Transactions postTransactionAtAccount(final String accountNumber, final MoneyTransferRequestDto requestDto, final SubTransactionType subTransactionType){
+    try{
+      TransactionMetadata transactionMetadata = Imapper.INSTANCE.transferRequestToTransactionMetadata(requestDto, accountNumber);
+      String transactionMetadataString = Imapper.INSTANCE.fromDtotoJsonString(transactionMetadata);
+      Transactions transactions = Imapper.INSTANCE.transferRequestToDebitEntity(requestDto, accountNumber, subTransactionType, TransactionStatus.SUCCESS, transactionMetadataString);
+      transactionsRepository.insert(transactions);
+      String externalReferenceId = CommonsUtil.getExternalReferenceId(transactions.getTransactionId());
+      transactions.setExternalReferenceId(externalReferenceId);
+      transactionsRepository.update(transactions);
+      log.info(
+          "Posted {} transaction of amount:{} posted successfully at account:{}",
+          transactions.getType(),
+          transactions.getAmount(),
+          transactions.getAccountNumber());
+      return transactions;
+    }
+    catch (Exception e){
+      log.error("Unable to post transaction for account:{}, rolling back. Error:{}", accountNumber, e);
+      throw new RuntimeException("Unable to post transaction for account:{}, rolling back.");
+    }
+  }
+
 }
