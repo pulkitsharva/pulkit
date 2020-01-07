@@ -9,7 +9,7 @@ import com.revolut.assignement.pulkit.exception.InsufficientBalanceException;
 
 public interface TransactionService {
 
-  MoneyTransferResponseDto doTransfer(final String accountNumber, final MoneyTransferRequestDto requestDto)
+  MoneyTransferResponseDto initiateMoneyTransfer(final String accountNumber, final MoneyTransferRequestDto requestDto)
       throws AccountNotFoundException, AccountStatusNotValidException, InsufficientBalanceException, DuplicateTransferRequestException;
 
 }

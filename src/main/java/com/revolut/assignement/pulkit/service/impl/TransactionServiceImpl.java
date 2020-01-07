@@ -42,8 +42,7 @@ public class TransactionServiceImpl implements TransactionService {
   private TransactionsRepository transactionsRepository;
 
   @Override
-  //initiateMoneyTransfer
-  public MoneyTransferResponseDto doTransfer(final String accountNumber, final MoneyTransferRequestDto requestDto)
+  public MoneyTransferResponseDto initiateMoneyTransfer(final String accountNumber, final MoneyTransferRequestDto requestDto)
       throws AccountNotFoundException, AccountStatusNotValidException,
       InsufficientBalanceException, DuplicateTransferRequestException {
 
