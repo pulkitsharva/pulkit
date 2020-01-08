@@ -57,7 +57,7 @@ public class TransactionServiceImplTest {
 
   @Before
   public void setup(){
-    doReturn(session).when(sessionFactory).getCurrentSession();
+    lenient().doReturn(session).when(sessionFactory).getCurrentSession();
     doReturn(session).when(sessionFactory).openSession();
     doReturn(transaction).when(session).beginTransaction();
     doReturn(true).when(session).isOpen();
@@ -287,7 +287,7 @@ public class TransactionServiceImplTest {
     lenient().doReturn(senderAccount).when(session).get(Accounts.class, "xxx");
     lenient().doReturn(receiverAccount).when(session).get(Accounts.class, "yyy");
     doReturn(receiverAccount).when(accountService).getAccountByAccountNumber("yyy");
-    doReturn(senderAccount).when(accountService).getAccountByAccountNumberWithLock("xxx");
+    lenient().doReturn(senderAccount).when(accountService).getAccountByAccountNumberWithLock("xxx");
     doAnswer(invocation -> {
       Object[] objects = invocation.getArguments();
       Transactions transactions = (Transactions) objects[0];

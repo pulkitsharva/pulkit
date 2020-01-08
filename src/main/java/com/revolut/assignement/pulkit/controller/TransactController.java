@@ -34,7 +34,6 @@ public class TransactController {
       @NotNull @HeaderParam("X-ACCOUNT-NUMBER") final String accountNumber,
       @Valid @NotNull final MoneyTransferRequestDto request)
       throws AccountNotFoundException, InsufficientBalanceException, AccountStatusNotValidException, DuplicateTransferRequestException {
-    log.info("got request:{}", request);
     MoneyTransferResponseDto response = transactionService.initiateMoneyTransfer(accountNumber, request);
     return Response.ok().entity(response).build();
   }

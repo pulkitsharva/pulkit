@@ -17,7 +17,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import lombok.extern.slf4j.Slf4j;
 
-@Path("/test")
+@Path("/debug")
 @Produces(MediaType.APPLICATION_JSON)
 @Slf4j
 public class TestController {
@@ -36,7 +36,7 @@ public class TestController {
               .email(null)
               .firstName("pulkit")
               .lastName("sharva")
-              .phoneNumber("+919654465464")
+              .phoneNumber("+911234567899")
               .build();
       userRepository.create(user1);
       Accounts accounts1 =
@@ -53,14 +53,14 @@ public class TestController {
               .email("john@gmail.com")
               .firstName("john")
               .lastName("travolta")
-              .phoneNumber("+919654465464")
+              .phoneNumber("+919876543210")
               .build();
       userRepository.create(user2);
       Accounts accounts2 =
           Accounts.builder()
               .accountNumber(UUID.randomUUID().toString())
               .userId(user2.getUserId())
-              .availableBalance(new BigDecimal(500))
+              .availableBalance(new BigDecimal(1500))
               .accountStatus(AccountStatus.ACTIVE)
               .build();
       accountsRepository.insert(accounts2);

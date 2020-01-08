@@ -31,6 +31,7 @@ public class StatementRepositoryImpl extends AbstractDAO<Statement> implements S
   public List<Statement> getStatementByAccountNumber(String accountNumber) {
     Criteria criteria = this.currentSession().createCriteria(Statement.class);
     criteria.add(Restrictions.eq("accountNumber", accountNumber));
+    criteria.add(Restrictions.eq("visibleToUI", Boolean.TRUE));
     return criteria.list();
   }
 

@@ -5,7 +5,7 @@ import com.revolut.assignement.pulkit.common.AccountStatus;
 import com.revolut.assignement.pulkit.common.CommonsUtil;
 import com.revolut.assignement.pulkit.common.Imapper;
 import com.revolut.assignement.pulkit.common.SubTransactionType;
-import com.revolut.assignement.pulkit.common.TransactionMetadata;
+import com.revolut.assignement.pulkit.dto.TransactionMetadata;
 import com.revolut.assignement.pulkit.common.TransactionStatus;
 import com.revolut.assignement.pulkit.common.TransactionType;
 import com.revolut.assignement.pulkit.dao.Accounts;

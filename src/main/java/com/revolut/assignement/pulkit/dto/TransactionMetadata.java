@@ -1,5 +1,7 @@
-package com.revolut.assignement.pulkit.common;
+package com.revolut.assignement.pulkit.dto;
 
+import com.revolut.assignement.pulkit.common.CurrencyType;
+import com.revolut.assignement.pulkit.common.TransactionPlatform;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

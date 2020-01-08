@@ -4,13 +4,14 @@ import com.revolut.assignement.pulkit.common.TransactionType;
 import com.revolut.assignement.pulkit.dao.Statement;
 import com.revolut.assignement.pulkit.dao.Transactions;
 import com.revolut.assignement.pulkit.dto.MoneyTransferRequestDto;
+import com.revolut.assignement.pulkit.dto.StatementResponseDto;
 import java.util.List;
 
 public interface StatementService {
 
   void insert(final Statement statement);
 
-  List<Statement> getStatementByAccountNumber(final String accountNumber);
+  StatementResponseDto getStatementByAccountNumber(final String accountNumber);
 
   Statement getStatementByStatementId(final Long statementId);
 
