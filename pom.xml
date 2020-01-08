@@ -6,7 +6,7 @@
 
   <groupId>com.revolut.assignement</groupId>
   <artifactId>pulkit</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>RELEASE.1.0</version>
   <dependencies>
     <dependency>
       <groupId>io.dropwizard</groupId>
@@ -22,6 +22,7 @@
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <version>1.16.20</version>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>io.dropwizard</groupId>
