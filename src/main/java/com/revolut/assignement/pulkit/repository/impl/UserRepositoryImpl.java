@@ -4,6 +4,8 @@ import com.google.inject.Inject;
 import com.revolut.assignement.pulkit.dao.User;
 import com.revolut.assignement.pulkit.repository.UserRepository;
 import io.dropwizard.hibernate.AbstractDAO;
+import java.sql.Timestamp;
+import java.util.Date;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;

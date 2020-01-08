@@ -5,8 +5,10 @@ import com.google.inject.Stage;
 import com.hubspot.dropwizard.guice.GuiceBundle;
 import com.revolut.assignement.pulkit.common.DependencyInjector;
 import com.revolut.assignement.pulkit.common.RevolutApplicationConfiguration;
+import com.revolut.assignement.pulkit.dao.User;
 import com.revolut.assignement.pulkit.exception.RevolutExceptionMapperImpl;
 import com.revolut.assignement.pulkit.exception.RuntimeExceptionMapper;
+import com.revolut.assignement.pulkit.repository.UserRepository;
 import io.dropwizard.Application;
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.hibernate.HibernateBundle;
@@ -41,7 +43,6 @@ public class RevolutApplication extends Application<RevolutApplicationConfigurat
             .build(Stage.DEVELOPMENT);
     bootstrap.addBundle(hibernate);
     bootstrap.addBundle(this.guiceBundle);
-
   }
 
   public void run(RevolutApplicationConfiguration configuration, Environment environment)

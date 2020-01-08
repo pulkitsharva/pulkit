@@ -70,12 +70,18 @@ public class TransactionServiceImpl implements TransactionService {
         session -> {
           try{
             Accounts senderAccountWithLock = accountService.getAccountByAccountNumberWithLock(accountNumber);
+            if(senderAccountWithLock == null){
+              throw new RuntimeException("Unable to get lock on the sender's account");
+            }
             Transactions debit = postTransactionAtAccount(accountNumber, requestDto, SubTransactionType.MONEY_TRANSFER);
             Statement debitStatement = statementService.postStatementAtAccount(accountNumber, requestDto, debit,
                 TransactionType.DEBIT);
             accountService.reduceBalanceOnSuccessfulTransaction(senderAccountWithLock, debit.getAmount());
 
             Accounts receiverAccountWithLock = accountService.getAccountByAccountNumberWithLock(requestDto.getReceiverAccountNumber());
+            if(receiverAccountWithLock == null){
+              throw new RuntimeException("Unable to get lock on the receiver's account");
+            }
             Transactions credit = postTransactionAtAccount(requestDto.getReceiverAccountNumber(), requestDto, SubTransactionType.MONEY_TRANSFER);
             Statement creditStatement = statementService.postStatementAtAccount(accountNumber, requestDto, credit, TransactionType.CREDIT);
             accountService.increaseBalanceOnSuccessfulTransaction(receiverAccountWithLock, credit.getAmount());
@@ -90,7 +96,6 @@ public class TransactionServiceImpl implements TransactionService {
         sessionFactory);
     MoneyTransferResponseDto moneyTransferResponseDto = MoneyTransferResponseDto.builder()
         .paymentGatewayTransactionId(requestDto.getPaymentGatewayTransactionId())
-        .externalReferenceId(transactions.getExternalReferenceId())
         .timestamp(transactions.getCreatedAt().getTime())
         .status(transactions.getStatus())
         .build();
@@ -110,18 +115,18 @@ public class TransactionServiceImpl implements TransactionService {
 
 
   }
-  private Accounts getAccount(final String accountNumber){
-    Accounts account =
-        (Accounts)
-            SessionManager.executeInSession(
-                session -> {
-                  return accountService.getAccountByAccountNumber(accountNumber);
-                },
-                sessionFactory);
-    return account;
+   Accounts getAccount(final String accountNumber){
+      Accounts account =
+          (Accounts)
+              SessionManager.executeInSession(
+                  session -> {
+                    return accountService.getAccountByAccountNumber(accountNumber);
+                  },
+                  sessionFactory);
+      return account;
   }
 
-  private Transactions postTransactionAtAccount(final String accountNumber, final MoneyTransferRequestDto requestDto, final SubTransactionType subTransactionType){
+  public Transactions postTransactionAtAccount(final String accountNumber, final MoneyTransferRequestDto requestDto, final SubTransactionType subTransactionType){
     try{
       TransactionMetadata transactionMetadata = Imapper.INSTANCE.transferRequestToTransactionMetadata(requestDto, accountNumber);
       String transactionMetadataString = Imapper.INSTANCE.fromDtotoJsonString(transactionMetadata);

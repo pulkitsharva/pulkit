@@ -3,21 +3,17 @@ package com.revolut.assignement.pulkit.controller;
 import com.google.inject.Inject;
 import com.revolut.assignement.pulkit.common.AccountStatus;
 import com.revolut.assignement.pulkit.dao.Accounts;
-import com.revolut.assignement.pulkit.dao.Statement;
-import com.revolut.assignement.pulkit.dao.Transactions;
 import com.revolut.assignement.pulkit.dao.User;
 import com.revolut.assignement.pulkit.repository.AccountsRepository;
-import com.revolut.assignement.pulkit.repository.StatementRepository;
-import com.revolut.assignement.pulkit.repository.TransactionsRepository;
 import com.revolut.assignement.pulkit.repository.UserRepository;
 import io.dropwizard.hibernate.UnitOfWork;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import javax.ws.rs.GET;
+import java.util.UUID;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,80 +27,47 @@ public class TestController {
   @Inject
   private AccountsRepository accountsRepository;
 
-  @Inject
-  private StatementRepository statementRepository;
-
-  @Inject
-  private TransactionsRepository transactionsRepository;
-
-  @GET
+  @POST
   @UnitOfWork
-  @Path("/test1")
-  public List<String> test() {
-    User user =
-        User.builder()
-            .email(null)
-            .firstName("pulkit")
-            .lastName("sharva")
-            .phoneNumber("+919654465464")
-            .build();
-    userRepository.create(user);
-    Accounts accounts =
-        Accounts.builder()
-            .accountNumber("xxx")
-            .userId(user.getUserId())
-            .availableBalance(new BigDecimal(1000))
-            .accountStatus(AccountStatus.ACTIVE)
-            .build();
-    accountsRepository.insert(accounts);
+  @Path("/account")
+  public List<Accounts> createAccount() {
+      User user1 =
+          User.builder()
+              .email(null)
+              .firstName("pulkit")
+              .lastName("sharva")
+              .phoneNumber("+919654465464")
+              .build();
+      userRepository.create(user1);
+      Accounts accounts1 =
+          Accounts.builder()
+              .accountNumber(UUID.randomUUID().toString())
+              .userId(user1.getUserId())
+              .availableBalance(new BigDecimal(1000))
+              .accountStatus(AccountStatus.ACTIVE)
+              .build();
+      accountsRepository.insert(accounts1);
 
-    User user1 =
-        User.builder()
-            .email("john@gmail.com")
-            .firstName("john")
-            .lastName("travolta")
-            .phoneNumber("+919654465464")
-            .build();
-    userRepository.create(user1);
-    Accounts accounts1 =
-        Accounts.builder()
-            .accountNumber("yyy")
-            .userId(user1.getUserId())
-            .availableBalance(new BigDecimal(500))
-            .accountStatus(AccountStatus.ACTIVE)
-            .build();
-    accountsRepository.insert(accounts1);
-    List<String> list = new ArrayList<>();
-    list.add(accounts.getAccountNumber());
-    list.add(accounts1.getAccountNumber());
-    return list;
+      User user2 =
+          User.builder()
+              .email("john@gmail.com")
+              .firstName("john")
+              .lastName("travolta")
+              .phoneNumber("+919654465464")
+              .build();
+      userRepository.create(user2);
+      Accounts accounts2 =
+          Accounts.builder()
+              .accountNumber(UUID.randomUUID().toString())
+              .userId(user2.getUserId())
+              .availableBalance(new BigDecimal(500))
+              .accountStatus(AccountStatus.ACTIVE)
+              .build();
+      accountsRepository.insert(accounts2);
+      List<Accounts> list = new ArrayList<>();
+      list.add(accounts1);
+      list.add(accounts2);
+      return list;
   }
 
-  @GET
-  @Path("/test2")
-  @UnitOfWork
-  public List<Accounts> getUser(@QueryParam("userId") final Long userId) {
-    return accountsRepository.getAllAccounts();
-  }
-
-  @GET
-  @Path("/test3")
-  @UnitOfWork
-  public List<Statement> getAllStatements() {
-    return statementRepository.getAll();
-  }
-
-  @GET
-  @Path("/test4")
-  @UnitOfWork
-  public List<Transactions> getAllCredits() {
-    return transactionsRepository.getTransactionsByAccountNumber("yyy");
-  }
-
-  @GET
-  @Path("/test5")
-  @UnitOfWork
-  public List<Transactions> getAllDebits() {
-    return transactionsRepository.getTransactionsByAccountNumber("xxx");
-  }
 }

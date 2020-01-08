@@ -11,7 +11,6 @@ import lombok.Setter;
 public class MoneyTransferResponseDto {
 
   private String paymentGatewayTransactionId;
-  private String externalReferenceId;
   private TransactionStatus status;
   private Long timestamp;
 }
