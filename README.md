@@ -20,7 +20,7 @@ We have following 3 controllers in the system
 ## CURL
 
 To setup dummy account<br>
-`curl -X POST http://localhost:8080/dbug/account`
+`curl -X POST http://localhost:8080/debug/account`
 <br>It will response two accountNumbers in the response
 
 To initiate money transfer<br>
