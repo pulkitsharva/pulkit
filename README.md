@@ -31,5 +31,6 @@ To initiate money transfer<br>
     'http://localhost:8080/api/v1/user/statement?=' \
     -H 'X-ACCOUNT-NUMBER: xxx' `
     
-
+## Test Cases
+29 test cases are written covering all major scenarios.
  
